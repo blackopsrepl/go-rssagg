@@ -1,0 +1,4 @@
+go-rssagg
+vendor
+.vscode
+.env
