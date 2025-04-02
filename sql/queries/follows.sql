@@ -9,5 +9,6 @@ RETURNING *;
 --
 
 -- name: DeleteFollow :exec
+-- must prevent one user from deleting follows from other users by requiring both id and user_id
 DELETE FROM feed_follows WHERE id = $1 and user_id = $2;
 --

@@ -59,6 +59,7 @@ func main() {
 
 	v1Router.Post("/follows", apiConfig.requireUserAuth(apiConfig.handlerFollowCreate))
 	v1Router.Get("/follows", apiConfig.requireUserAuth(apiConfig.handlerFollowsGet))
+	v1Router.Delete("/follows/{FollowID}", apiConfig.requireUserAuth(apiConfig.handlerFollowDelete))
 
 	router.Mount("/v1", v1Router)
 

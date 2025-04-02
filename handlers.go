@@ -7,6 +7,7 @@ import (
 
 	"github.com/blackopsrepl/go-rssagg/internal/auth"
 	"github.com/blackopsrepl/go-rssagg/internal/database"
+	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
 )
 
@@ -131,6 +132,27 @@ func (cfg *apiConfig) handlerFollowsGet(w http.ResponseWriter, r *http.Request, 
 	}
 
 	respondWithJSON(w, http.StatusOK, databaseFollowsToFollows(follows))
+}
+
+func (cfg *apiConfig) handlerFollowDelete(w http.ResponseWriter, r *http.Request, user database.User) {
+	// takes feedFollowID parameter from URL address an parses it into feedFollowID
+	followIDStr := chi.URLParam(r, "FollowID")
+	followID, err := uuid.Parse(followIDStr)
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "Invalid follow ID")
+		return
+	}
+
+	err = cfg.DB.DeleteFollow(r.Context(), database.DeleteFollowParams{
+		UserID: user.ID,
+		ID:     followID,
+	})
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Couldn't delete follow")
+		return
+	}
+
+	respondWithJSON(w, http.StatusOK, struct{}{})
 }
 
 func (cfg *apiConfig) requireUserAuth(handler userRequestHandler) http.HandlerFunc {
