@@ -3,12 +3,12 @@ SHELL := /bin/bash
 
 help:
 	@echo "Makefile Commands:"
-	@echo "  config               - Set up the Rust environment."
+	@echo "  config               - Set up the environment."
 	@echo "  build                - Build go-rssagg"
-	@echo "  migration-up         - "Run up migration"
-	@echo "  migration-down       - "Run down migration"
+	@echo "  migration-up         - Run up migration"
+	@echo "  migration-down       - Run down migration"
 	@echo "  run                  - Build and run go-rssagg in-place"
-	@echo "  test                 - Run tests
+	@echo "  test                 - Run tests"
 	@echo "  alpha                - Generate changelog and create an alpha tag."
 	@echo "  beta                 - Generate changelog and create an beta tag."
 	@echo "  minor                - Generate changelog and create a minor tag."

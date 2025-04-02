@@ -96,6 +96,43 @@ func (cfg *apiConfig) handlerFeedsGet(w http.ResponseWriter, r *http.Request) {
 	respondWithJSON(w, http.StatusOK, databaseFeedsToFeeds(feeds))
 }
 
+func (cfg *apiConfig) handlerFollowCreate(w http.ResponseWriter, r *http.Request, user database.User) {
+	type parameters struct {
+		FeedID uuid.UUID `json:"feed_id"`
+	}
+	decoder := json.NewDecoder(r.Body)
+	params := parameters{}
+	err := decoder.Decode(&params)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Couldn't decode parameters")
+		return
+	}
+
+	follow, err := cfg.DB.CreateFollow(r.Context(), database.CreateFollowParams{
+		ID:        uuid.New(),
+		CreatedAt: time.Now().UTC(),
+		UpdatedAt: time.Now().UTC(),
+		UserID:    user.ID,
+		FeedID:    params.FeedID,
+	})
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Couldn't create follow")
+		return
+	}
+
+	respondWithJSON(w, http.StatusOK, databaseFollowToFollow(follow))
+}
+
+func (cfg *apiConfig) handlerFollowsGet(w http.ResponseWriter, r *http.Request, user database.User) {
+	follows, err := cfg.DB.GetFollowsForUser(r.Context(), user.ID)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Couldn't get follows")
+		return
+	}
+
+	respondWithJSON(w, http.StatusOK, databaseFollowsToFollows(follows))
+}
+
 func (cfg *apiConfig) requireUserAuth(handler userRequestHandler) http.HandlerFunc {
 	/* returns a closure with the same function signature as http.HandlerFunc
 	 * but with the additional parameter of database.User */
