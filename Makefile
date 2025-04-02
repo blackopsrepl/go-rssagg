@@ -1,12 +1,13 @@
 SHELL := /bin/bash
-.PHONY: help config build migration-up migration-down run test alpha beta minor patch release
+.PHONY: help config dbcode build migration-up migration-down run test alpha beta minor patch release
 
 help:
 	@echo "Makefile Commands:"
 	@echo "  config               - Set up the environment."
-	@echo "  build                - Build go-rssagg"
+	@echo "  dbcode               - Generate database code from sql/queries."
 	@echo "  migration-up         - Run up migration"
 	@echo "  migration-down       - Run down migration"
+	@echo "  build                - Build go-rssagg"	
 	@echo "  run                  - Build and run go-rssagg in-place"
 	@echo "  test                 - Run tests"
 	@echo "  alpha                - Generate changelog and create an alpha tag."
@@ -24,9 +25,9 @@ config:
 	go mod tidy
 	go mod vendor
 
-build:
-	@echo "Building go-rssagg"
-	go build
+dbcode:
+	@echo "Generating database code from sql/queries"
+	~/go/bin/sqlc generate
 
 migration-up:
 	@echo "Running up migration"
@@ -35,6 +36,10 @@ migration-up:
 migration-down:
 	@echo "Running down migration"
 	pushd sql/schema && source ../../.env && ~/go/bin/goose postgres $$DB_URL down && popd
+
+build:
+	@echo "Building go-rssagg"
+	go build
 
 run:
 	@echo "Running go-rssagg"

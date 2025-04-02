@@ -56,6 +56,7 @@ type DeleteFollowParams struct {
 	UserID uuid.UUID
 }
 
+// must prevent one user from deleting follows from other users by requiring both id and user_id
 func (q *Queries) DeleteFollow(ctx context.Context, arg DeleteFollowParams) error {
 	_, err := q.db.ExecContext(ctx, deleteFollow, arg.ID, arg.UserID)
 	return err

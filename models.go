@@ -7,6 +7,7 @@ import (
 	"github.com/google/uuid"
 )
 
+// USER //
 type User struct {
 	ID        uuid.UUID `json:"id"`
 	CreatedAt time.Time `json:"created_at"`
@@ -25,6 +26,7 @@ func databaseUserToUser(user database.User) User {
 	}
 }
 
+// FEEDS //
 type Feed struct {
 	ID        uuid.UUID `json:"id"`
 	CreatedAt time.Time `json:"created_at"`
@@ -53,6 +55,7 @@ func databaseFeedsToFeeds(feeds []database.Feed) []Feed {
 	return result
 }
 
+// FOLLOWS //
 type Follow struct {
 	ID        uuid.UUID `json:"id"`
 	CreatedAt time.Time `json:"created_at"`
@@ -77,4 +80,22 @@ func databaseFollowsToFollows(follows []database.FeedFollow) []Follow {
 		result[i] = databaseFollowToFollow(follow)
 	}
 	return result
+}
+
+// RSS //
+type RSSFeed struct {
+	Channel struct {
+		Title       string    `xml:"title"`
+		Link        string    `xml:"link"`
+		Description string    `xml:"description"`
+		Language    string    `xml:"language"`
+		Item        []RSSItem `xml:"item"`
+	} `xml:"channel"`
+}
+
+type RSSItem struct {
+	Title       string `xml:"title"`
+	Link        string `xml:"link"`
+	Description string `xml:"description"`
+	PubDate     string `xml:"pubDate"`
 }

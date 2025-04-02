@@ -33,7 +33,6 @@ func (cfg *apiConfig) handlerUsersCreate(w http.ResponseWriter, r *http.Request)
 	decoder := json.NewDecoder(r.Body)
 	params := parameters{}
 	err := decoder.Decode(&params)
-
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Couldn't decode parameters")
 		return
@@ -45,7 +44,6 @@ func (cfg *apiConfig) handlerUsersCreate(w http.ResponseWriter, r *http.Request)
 		UpdatedAt: time.Now().UTC(),
 		Name:      params.Name,
 	})
-
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Couldn't create user")
 		return
@@ -63,6 +61,7 @@ func (cfg *apiConfig) handlerFeedCreate(w http.ResponseWriter, r *http.Request, 
 		Name string `json:"name"`
 		URL  string `json:"url"`
 	}
+
 	decoder := json.NewDecoder(r.Body)
 	params := parameters{}
 	err := decoder.Decode(&params)
@@ -101,6 +100,7 @@ func (cfg *apiConfig) handlerFollowCreate(w http.ResponseWriter, r *http.Request
 	type parameters struct {
 		FeedID uuid.UUID `json:"feed_id"`
 	}
+
 	decoder := json.NewDecoder(r.Body)
 	params := parameters{}
 	err := decoder.Decode(&params)
@@ -155,9 +155,9 @@ func (cfg *apiConfig) handlerFollowDelete(w http.ResponseWriter, r *http.Request
 	respondWithJSON(w, http.StatusOK, struct{}{})
 }
 
+// takes a handler that requires user authentication and returns a http.HandlerFunc
 func (cfg *apiConfig) requireUserAuth(handler userRequestHandler) http.HandlerFunc {
-	/* returns a closure with the same function signature as http.HandlerFunc
-	 * but with the additional parameter of database.User */
+	// returns an anonymous function that wraps the authentication logic
 	return func(w http.ResponseWriter, r *http.Request) {
 		apiKey, err := auth.GetAPIKey(r.Header)
 		if err != nil {

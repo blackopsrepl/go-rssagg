@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/blackopsrepl/go-rssagg/internal/database"
 	"github.com/go-chi/chi/v5"
@@ -14,6 +15,8 @@ import (
 )
 
 func main() {
+
+	// ENVIRONMENT //
 	godotenv.Load(".env")
 
 	portString := os.Getenv("PORT")
@@ -30,6 +33,7 @@ func main() {
 	if err != nil {
 		log.Fatal("Can't connect to database", err)
 	}
+
 	dbQueries := database.New(db)
 
 	apiConfig := apiConfig{
@@ -47,6 +51,7 @@ func main() {
 		MaxAge:           300,
 	}))
 
+	// ROUTERS //
 	v1Router := chi.NewRouter()
 	v1Router.Get("/healthz", handlerReady)
 	v1Router.Get("/err", handlerErr)
@@ -68,6 +73,12 @@ func main() {
 		Addr:    ":" + portString,
 	}
 
+	// SCRAPING //
+	const collectionConcurrency = 10
+	const collectionInterval = time.Minute
+	go startScraping(dbQueries, collectionConcurrency, collectionInterval)
+
+	// START SERVER //
 	log.Printf("Server starting on port %v", portString)
 	log.Fatal(srv.ListenAndServe())
 
