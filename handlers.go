@@ -25,6 +25,7 @@ func handlerReady(w http.ResponseWriter, r *http.Request) {
 	respondWithJSON(w, http.StatusOK, map[string]string{"status": "ok"})
 }
 
+// USERS //
 func (cfg *apiConfig) handlerUsersCreate(w http.ResponseWriter, r *http.Request) {
 	type parameters struct {
 		Name string `json:"name"`
@@ -56,6 +57,7 @@ func (cfg *apiConfig) handlerUsersGet(w http.ResponseWriter, r *http.Request, us
 	respondWithJSON(w, http.StatusOK, databaseUserToUser(user))
 }
 
+// FEEDS //
 func (cfg *apiConfig) handlerFeedCreate(w http.ResponseWriter, r *http.Request, user database.User) {
 	type parameters struct {
 		Name string `json:"name"`
@@ -96,6 +98,7 @@ func (cfg *apiConfig) handlerFeedsGet(w http.ResponseWriter, r *http.Request) {
 	respondWithJSON(w, http.StatusOK, databaseFeedsToFeeds(feeds))
 }
 
+// FOLLOWS//
 func (cfg *apiConfig) handlerFollowCreate(w http.ResponseWriter, r *http.Request, user database.User) {
 	type parameters struct {
 		FeedID uuid.UUID `json:"feed_id"`
@@ -154,6 +157,8 @@ func (cfg *apiConfig) handlerFollowDelete(w http.ResponseWriter, r *http.Request
 
 	respondWithJSON(w, http.StatusOK, struct{}{})
 }
+
+// AUTHENTICATION//
 
 // takes a handler that requires user authentication and returns a http.HandlerFunc
 func (cfg *apiConfig) requireUserAuth(handler userRequestHandler) http.HandlerFunc {
