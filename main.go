@@ -53,6 +53,7 @@ func main() {
 
 	// ROUTERS //
 	v1Router := chi.NewRouter()
+
 	v1Router.Get("/healthz", handlerReady)
 	v1Router.Get("/err", handlerErr)
 
@@ -65,6 +66,8 @@ func main() {
 	v1Router.Post("/follows", apiConfig.requireUserAuth(apiConfig.handlerFollowCreate))
 	v1Router.Get("/follows", apiConfig.requireUserAuth(apiConfig.handlerFollowsGet))
 	v1Router.Delete("/follows/{FollowID}", apiConfig.requireUserAuth(apiConfig.handlerFollowDelete))
+
+	v1Router.Get("/posts", apiConfig.requireUserAuth(apiConfig.handlerPostsGet))
 
 	router.Mount("/v1", v1Router)
 

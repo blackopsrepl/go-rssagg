@@ -158,6 +158,20 @@ func (cfg *apiConfig) handlerFollowDelete(w http.ResponseWriter, r *http.Request
 	respondWithJSON(w, http.StatusOK, struct{}{})
 }
 
+// POSTS //
+func (cfg *apiConfig) handlerPostsGet(w http.ResponseWriter, r *http.Request, user database.User) {
+	posts, err := cfg.DB.GetPostsForUser(r.Context(), database.GetPostsForUserParams{
+		UserID: user.ID,
+		Limit:  10,
+	})
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Couldn't get posts")
+		return
+	}
+
+	respondWithJSON(w, http.StatusOK, databasePostsToPosts(posts))
+}
+
 // AUTHENTICATION//
 
 // takes a handler that requires user authentication and returns a http.HandlerFunc
