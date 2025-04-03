@@ -1,4 +1,5 @@
 go-rssagg
 vendor
+go-rssagg.code-workspace
 .vscode
 .env
