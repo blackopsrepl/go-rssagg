@@ -39,7 +39,7 @@ migration-down:
 
 build:
 	@echo "Building go-rssagg"
-	go build
+	go build -C cmd/go-rssagg
 
 run:
 	@echo "Running go-rssagg"
