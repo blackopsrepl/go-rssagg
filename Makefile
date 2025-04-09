@@ -43,7 +43,7 @@ build:
 
 run:
 	@echo "Running go-rssagg"
-	go build && ./go-rssagg
+	go build -C cmd/go-rssagg && cmd/go-rssagg/go-rssagg --env .env
 	
 test:
 	@echo "Running tests"
