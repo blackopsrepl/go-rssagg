@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"flag"
 	"log"
 	"net/http"
 	"os"
@@ -17,7 +18,12 @@ import (
 func main() {
 
 	// ENVIRONMENT //
-	godotenv.Load(".env")
+
+	// parse flags and load anvironment
+	envFile := flag.String("env", "", "Path to .env file")
+	flag.Parse()
+
+	setEnv(*envFile)
 
 	portString := os.Getenv("PORT")
 	if portString == "" {
@@ -85,4 +91,17 @@ func main() {
 	log.Printf("Server starting on port %v", portString)
 	log.Fatal(srv.ListenAndServe())
 
+}
+
+func setEnv(envFile string) {
+	if envFile != "" {
+		err := godotenv.Load(envFile)
+		if err != nil {
+			log.Fatalf("Error loading .env file: %v", err)
+		}
+	}
+
+	if os.Getenv("DB_URL") == "" || os.Getenv("PORT") == "" {
+		log.Fatalf("DB_URL and PORT must be set as environment variables!\n\nLoaded DB_URL: %s, PORT: %s", os.Getenv("DB_URL"), os.Getenv("PORT"))
+	}
 }
