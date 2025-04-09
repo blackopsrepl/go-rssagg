@@ -1,4 +1,4 @@
-go-rssagg
+cmd/go-rssagg/go-rssagg
 vendor
 go-rssagg.code-workspace
 .vscode
