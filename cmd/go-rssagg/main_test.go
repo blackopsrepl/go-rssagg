@@ -5,21 +5,6 @@ import (
 	"testing"
 )
 
-// func setEnv() {
-// 	envFile := flag.String("env", ".env", "Path to .env file")
-
-// 	flag.Parse()
-
-// 	if *envFile != "" {
-// 		err := godotenv.Load(*envFile)
-// 		if err != nil {
-// 			log.Fatalf("Error loading .env file: %v", err)
-// 		}
-// 	} else if os.Getenv("DB_URL") == "" || os.Getenv("PORT") == "" {
-// 		log.Fatal("DB_URL and PORT must be set as environment variables!")
-// 	}
-// }
-
 func TestSetEnv(t *testing.T) {
 
 	testCases := []struct {
