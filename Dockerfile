@@ -24,6 +24,7 @@ WORKDIR /root/
 
 COPY --from=builder /app/cmd/go-rssagg/go-rssagg .
 
-EXPOSE 8080
+ENV DB_URL=$DB_URL
+ENV PORT=$PORT
 
 CMD ["./go-rssagg"]
