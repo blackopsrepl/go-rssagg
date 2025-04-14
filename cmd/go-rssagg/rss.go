@@ -69,6 +69,8 @@ func scrapeFeed(db *database.Queries, wg *sync.WaitGroup, feed database.Feed) {
 				Time:  t,
 				Valid: true,
 			}
+		} else {
+			log.Printf("Couldn't parse date: %v", err)
 		}
 
 		// save post to database
