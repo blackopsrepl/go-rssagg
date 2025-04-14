@@ -183,6 +183,7 @@ func (cfg *apiConfig) handlerPostsGetByDate(w http.ResponseWriter, r *http.Reque
 		respondWithError(w, http.StatusBadRequest, "Invalid date format")
 		return
 	}
+
 	posts, err := cfg.DB.GetPostsForUserByDate(r.Context(), database.GetPostsForUserByDateParams{
 		UserID:      user.ID,
 		PublishedAt: publishedAt,
