@@ -133,6 +133,12 @@ func databasePostsToPosts(posts []database.Post) []Post {
 	return result
 }
 
+type Page struct {
+	ID      uuid.UUID `json:"id"`
+	Content []Post    `json:"content"`
+	PostID  uuid.UUID `json:"post_id"`
+}
+
 func nullTimeToTimePtr(t sql.NullTime) *time.Time {
 	if t.Valid {
 		return &t.Time
@@ -145,4 +151,29 @@ func nullStringToStringPtr(s sql.NullString) *string {
 		return &s.String
 	}
 	return nil
+}
+
+// OLLAMA //
+type OllamaRequest struct {
+	Model    string          `json:"model"`
+	Messages []OllamaMessage `json:"messages"`
+	Stream   bool            `json:"stream"`
+}
+
+type OllamaMessage struct {
+	Role    string `json:"role"`
+	Content string `json:"content"`
+}
+
+type OLLamaResponse struct {
+	Model              string        `json:"model"`
+	CreatedAt          time.Time     `json:"created_at"`
+	Message            OllamaMessage `json:"message"`
+	Done               bool          `json:"done"`
+	TotalDuration      int64         `json:"total_duration"`
+	LoadDuration       int           `json:"load_duration"`
+	PromptEvalCount    int           `json:"prompt_eval_count"`
+	PromptEvalDuration int           `json:"prompt_eval_duration"`
+	EvalCount          int           `json:"eval_count"`
+	EvalDuration       int64         `json:"eval_duration"`
 }

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"encoding/json"
 	"net/http"
 	"time"
@@ -138,7 +139,6 @@ func (cfg *apiConfig) handlerFollowsGet(w http.ResponseWriter, r *http.Request, 
 }
 
 func (cfg *apiConfig) handlerFollowDelete(w http.ResponseWriter, r *http.Request, user database.User) {
-	// takes feedFollowID parameter from URL address an parses it into feedFollowID
 	followIDStr := chi.URLParam(r, "FollowID")
 	followID, err := uuid.Parse(followIDStr)
 	if err != nil {
@@ -163,6 +163,31 @@ func (cfg *apiConfig) handlerPostsGet(w http.ResponseWriter, r *http.Request, us
 	posts, err := cfg.DB.GetPostsForUser(r.Context(), database.GetPostsForUserParams{
 		UserID: user.ID,
 		Limit:  10,
+	})
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Couldn't get posts")
+		return
+	}
+
+	respondWithJSON(w, http.StatusOK, databasePostsToPosts(posts))
+}
+
+func (cfg *apiConfig) handlerPostsGetByDate(w http.ResponseWriter, r *http.Request, user database.User) {
+	dateStr := chi.URLParam(r, "PostDate")
+
+	publishedAt := sql.NullTime{}
+
+	if t, err := time.Parse(time.RFC1123Z, dateStr); err == nil {
+		publishedAt = sql.NullTime{Time: t, Valid: true}
+	} else {
+		respondWithError(w, http.StatusBadRequest, "Invalid date format")
+		return
+	}
+
+	posts, err := cfg.DB.GetPostsForUserByDate(r.Context(), database.GetPostsForUserByDateParams{
+		UserID:      user.ID,
+		PublishedAt: publishedAt,
+		Limit:       24,
 	})
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Couldn't get posts")

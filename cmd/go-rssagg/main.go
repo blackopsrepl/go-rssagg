@@ -35,6 +35,11 @@ func main() {
 		log.Fatal("DB_URL is not found in the environment")
 	}
 
+	ollamaURL := os.Getenv("OLLAMA_URL")
+	if ollamaURL == "" {
+		log.Fatal("OLLAMA_URL is not found in the environment")
+	}
+
 	db, err := sql.Open("postgres", dbURL)
 	if err != nil {
 		log.Fatal("Can't connect to database", err)
@@ -74,7 +79,7 @@ func main() {
 	v1Router.Delete("/follows/{FollowID}", apiConfig.requireUserAuth(apiConfig.handlerFollowDelete))
 
 	v1Router.Get("/posts", apiConfig.requireUserAuth(apiConfig.handlerPostsGet))
-
+	v1Router.Get("/posts/{PostDate}", apiConfig.requireUserAuth(apiConfig.handlerPostsGetByDate))
 	router.Mount("/v1", v1Router)
 
 	srv := &http.Server{
@@ -99,9 +104,7 @@ func setEnv(envFile string) {
 		if err != nil {
 			log.Fatalf("Error loading .env file: %v", err)
 		}
-	}
-
-	if os.Getenv("DB_URL") == "" || os.Getenv("PORT") == "" {
+	} else if os.Getenv("DB_URL") == "" || os.Getenv("PORT") == "" {
 		log.Fatalf("DB_URL and PORT must be set as environment variables!\n\nLoaded DB_URL: %s, PORT: %s", os.Getenv("DB_URL"), os.Getenv("PORT"))
 	}
 }
