@@ -17,6 +17,8 @@ func crawler(address string) string {
 	if err != nil {
 		log.Fatalf("Error reading response body: %s", err)
 	}
+
 	log.Print(string(body))
+
 	return string(body)
 }
