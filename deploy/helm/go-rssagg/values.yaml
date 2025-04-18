@@ -1,0 +1,24 @@
+goRssagg:
+  goRssagg:
+    env:
+      dbUrl: ""
+      port: ""
+    image:
+      repository: ghcr.io/blackopsrepl/go-rssagg
+      tag: latest
+    imagePullPolicy: IfNotPresent
+    resources:
+      limits:
+        cpu: 500m
+        memory: 512Mi
+      requests:
+        cpu: 200m
+        memory: 256Mi
+  ports:
+  - name: http
+    port: 8080
+    protocol: TCP
+    targetPort: http
+  replicas: 1
+  type: ClusterIP
+kubernetesClusterDomain: cluster.local

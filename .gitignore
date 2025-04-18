@@ -3,3 +3,4 @@ vendor
 go-rssagg.code-workspace
 .vscode
 .env
+deploy/helm/go-rssagg/database-secret.yaml
