@@ -21,4 +21,26 @@ goRssagg:
     targetPort: http
   replicas: 1
   type: ClusterIP
+
+  postgresql:
+    enabled: true
+    global:
+      auth:
+        enablePostgresUser: true
+        postgresPassword: password
+
+    primary:
+      resources:
+        limits:
+          cpu: 500m
+          memory: 512Mi
+        requests:
+          cpu: 200m
+          memory: 256Mi
+      persistence:
+        enabled: true
+        size: 5Gi
+      service:
+        ports:
+          postgresql: 5432
 kubernetesClusterDomain: cluster.local
