@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "go-rssagg.fullname" . }}-go-rssagg
+  labels:
+    app: go-rssagg
+  {{- include "go-rssagg.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.goRssagg.replicas }}
+  selector:
+    matchLabels:
+      app: go-rssagg
+    {{- include "go-rssagg.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        app: go-rssagg
+      {{- include "go-rssagg.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+      - env:
+        - name: PORT
+          value: {{ quote .Values.goRssagg.goRssagg.env.port }}
+        - name: DB_URL
+          value: {{ quote .Values.goRssagg.goRssagg.env.dbUrl }}
+        - name: KUBERNETES_CLUSTER_DOMAIN
+          value: {{ quote .Values.kubernetesClusterDomain }}
+        image: {{ .Values.goRssagg.goRssagg.image.repository }}:{{ .Values.goRssagg.goRssagg.image.tag
+          | default .Chart.AppVersion }}
+        imagePullPolicy: {{ .Values.goRssagg.goRssagg.imagePullPolicy }}
+        name: go-rssagg
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        resources: {{- toYaml .Values.goRssagg.goRssagg.resources | nindent 10 }}
