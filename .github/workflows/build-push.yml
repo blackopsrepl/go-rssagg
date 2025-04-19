@@ -34,7 +34,10 @@ jobs:
         run: |
           BRANCH=${{ github.ref_name }}
           # Get the tag for the current commit, strip 'v' prefix, or default to 'latest'
-          VERSION=$(git tag --points-at HEAD | sed 's/^v//' | head -n 1 || echo "latest")
+          VERSION=$(git tag --points-at HEAD | sed 's/^v//' | head -n 1)
+          VERSION=${VERSION:-latest}
+          echo "Branch: $BRANCH"
+          echo "Version: $VERSION"
           echo "image_name=go-rssagg-$BRANCH" >> $GITHUB_OUTPUT
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
