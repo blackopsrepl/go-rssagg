@@ -4,9 +4,11 @@ import (
 	"context"
 	"database/sql"
 	"encoding/xml"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -64,7 +66,8 @@ func scrapeFeed(db *database.Queries, wg *sync.WaitGroup, feed database.Feed) {
 
 		// parse publication date
 		publishedAt := sql.NullTime{}
-		if t, err := time.Parse(time.RFC1123Z, item.PubDate); err == nil {
+		// if t, err := time.Parse(time.RFC1123Z, item.PubDate); err == nil {
+		if t, err := parseDate(item.PubDate); err == nil {
 			publishedAt = sql.NullTime{
 				Time:  t,
 				Valid: true,
@@ -125,4 +128,37 @@ func fetchFeed(feedURL string) (*RSSFeed, error) {
 	}
 
 	return &rssFeed, nil
+}
+
+// Helper function to try parsing dates in multiple formats
+func parseDate(dateStr string) (time.Time, error) {
+	// List of date formats to try
+	formats := []string{
+		time.RFC1123Z, // "Mon, 02 Jan 2006 15:04:05 -0700"
+		time.RFC1123,  // "Mon, 02 Jan 2006 15:04:05 MST"
+		time.RFC3339,  // "2006-01-02T15:04:05Z07:00"
+		time.RFC822Z,  // "02 Jan 06 15:04 -0700"
+		time.RFC822,   // "02 Jan 06 15:04 MST"
+		"2006-01-02T15:04:05Z",
+		"2006-01-02 15:04:05",
+		"2006-01-02",
+		"02 Jan 2006",
+		"Monday, 02-Jan-06 15:04:05 MST",
+		"Mon, 02 Jan 2006 15:04:05",
+		"Fri, 4 Apr 2025 00:00:00 +0000",
+	}
+
+	for _, format := range formats {
+		if t, err := time.Parse(format, dateStr); err == nil {
+			return t, nil
+		}
+	}
+
+	// If we couldn't parse with any format, try to handle more complex cases
+	// For example, some feeds might have timestamps or other non-standard formats
+	if timestamp, err := strconv.ParseInt(dateStr, 10, 64); err == nil {
+		return time.Unix(timestamp, 0), nil
+	}
+
+	return time.Time{}, fmt.Errorf("unable to parse date: %s", dateStr)
 }
