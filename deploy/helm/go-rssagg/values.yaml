@@ -3,6 +3,8 @@ goRssagg:
     env:
       dbUrl: ""
       port: ""
+      ollamaUrl: ""
+      ollamaModel: ""
     image:
       repository: ghcr.io/blackopsrepl/go-rssagg
       tag: latest
