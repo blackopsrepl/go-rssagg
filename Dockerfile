@@ -26,5 +26,7 @@ COPY --from=builder /app/cmd/go-rssagg/go-rssagg .
 
 ENV DB_URL=$DB_URL
 ENV PORT=$PORT
+ENV OLLAMA_URL=$OLLAMA_URL
+ENV OLLAMA_MODEL=$OLLAMA_MODEL
 
 CMD ["./go-rssagg"]
