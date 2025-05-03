@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.1.1](///compare/v0.1.0...v0.1.1) (2025-05-03)
+
+
+### Features
+
+* **handlers:** Add handlerPostsGetByDate 3f7480c
+* **main:** Add OLLAMA_URL environment variable check 38c8cc7
+* **models:** Add Page and Ollama structs 472843e
+* **ollama:** Add ollamaSendMessage function 5803d8f
+* **ollama:** Implement ollamaSendMessage function af4baa5
+* **pages:** add basic web crawler fcdc207
+* **rss:** Add helper function to parse dates in multiple formats 9c9d666
+* **schema:** add pages table b8cdf72
+
+
+### Bug Fixes
+
+* **deploy:** add ollama environment variables to Dockerfile 4955eee
+
 ## 0.1.0 (2025-04-19)
 
 
