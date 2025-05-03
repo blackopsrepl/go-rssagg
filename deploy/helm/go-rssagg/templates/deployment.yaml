@@ -23,6 +23,10 @@ spec:
           value: {{ quote .Values.goRssagg.goRssagg.env.port }}
         - name: DB_URL
           value: {{ quote .Values.goRssagg.goRssagg.env.dbUrl }}
+        - name: OLLAMA_URL
+          value: {{ quote .Values.goRssagg.goRssagg.env.ollamaUrl }}
+        - name: OLLAMA_MODEL
+          value: {{ quote .Values.goRssagg.goRssagg.env.ollamaModel }}
         - name: KUBERNETES_CLUSTER_DOMAIN
           value: {{ quote .Values.kubernetesClusterDomain }}
         image: {{ .Values.goRssagg.goRssagg.image.repository }}:{{ .Values.goRssagg.goRssagg.image.tag
