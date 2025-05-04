@@ -104,7 +104,7 @@ func setEnv(envFile string) {
 		if err != nil {
 			log.Fatalf("Error loading .env file: %v", err)
 		}
-	} else if os.Getenv("DB_URL") == "" || os.Getenv("PORT") == "" {
-		log.Fatalf("DB_URL and PORT must be set as environment variables!\n\nLoaded DB_URL: %s, PORT: %s", os.Getenv("DB_URL"), os.Getenv("PORT"))
+	} else if os.Getenv("DB_URL") == "" || os.Getenv("PORT") == "" || os.Getenv("OLLAMA_URL") == "" || os.Getenv("OLLAMA_MODEL") == "" || os.Getenv("REDIS_URL") == "" {
+		log.Fatalf("DB_URL, PORT, OLLAMA_URL, OLLAMA_MODEL, and REDIS_URL must be set as environment variables!\n\nLoaded DB_URL: %s, PORT: %s, OLLAMA_URL: %s, OLLAMA_MODEL: %s, REDIS_URL: %s", os.Getenv("DB_URL"), os.Getenv("PORT"), os.Getenv("OLLAMA_URL"), os.Getenv("OLLAMA_MODEL"), os.Getenv("REDIS_URL"))
 	}
 }
