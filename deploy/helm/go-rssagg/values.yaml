@@ -49,7 +49,9 @@ goRssagg:
   
   redis:
     enabled: true
-    usePassword: false
+    global:
+      auth:
+        enabled: false
     master:
       resources:
         limits:
