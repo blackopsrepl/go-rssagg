@@ -1,32 +1,12 @@
 package main
 
 import (
-	"context"
 	"io"
 	"log"
 	"net/http"
 	"regexp"
 	"strings"
-
-	"github.com/redis/go-redis/v9"
 )
-
-func saveToRedis(address string) {
-	client := redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
-		Password: "",
-		DB:       0,
-		Protocol: 2,
-	})
-
-	ctx := context.Background()
-
-	err := client.Set(ctx, address, crawler(address), 0).Err()
-	if err != nil {
-		log.Fatalf("Error saving to Redis: %s", err)
-	}
-
-}
 
 func crawler(address string) string {
 	response, err := http.Get(address)
