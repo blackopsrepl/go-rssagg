@@ -5,6 +5,7 @@ goRssagg:
       port: ""
       ollamaUrl: ""
       ollamaModel: ""
+      redisUrl: ""
     image:
       repository: ghcr.io/blackopsrepl/go-rssagg
       tag: latest
@@ -45,4 +46,24 @@ goRssagg:
       service:
         ports:
           postgresql: 5432
+  
+  redis:
+    enabled: true
+    global:
+      auth:
+        enabled: false
+    master:
+      resources:
+        limits:
+          cpu: 500m
+          memory: 512Mi
+        requests:
+          cpu: 200m
+          memory: 256Mi
+      persistence:
+        enabled: true
+        size: 5Gi
+      service:
+        ports:
+          redis: 6379
 kubernetesClusterDomain: cluster.local
