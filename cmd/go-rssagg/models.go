@@ -133,6 +133,7 @@ func databasePostsToPosts(posts []database.Post) []Post {
 	return result
 }
 
+// PAGES //
 type Page struct {
 	ID      uuid.UUID `json:"id"`
 	Content []Post    `json:"content"`
