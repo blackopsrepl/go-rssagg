@@ -13,6 +13,7 @@ import (
 	"github.com/go-chi/cors"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
+	"github.com/redis/go-redis/v9"
 )
 
 func main() {
@@ -35,9 +36,19 @@ func main() {
 		log.Fatal("DB_URL is not found in the environment")
 	}
 
+	redisURL := os.Getenv("REDIS_URL")
+	if redisURL == "" {
+		log.Fatal("REDIS_URL is not found in the environment")
+	}
+
 	ollamaURL := os.Getenv("OLLAMA_URL")
 	if ollamaURL == "" {
 		log.Fatal("OLLAMA_URL is not found in the environment")
+	}
+
+	ollamaModel := os.Getenv("OLLAMA_MODEL")
+	if ollamaModel == "" {
+		log.Fatal("OLLAMA_MODEL is not found in the environment")
 	}
 
 	db, err := sql.Open("postgres", dbURL)
@@ -47,8 +58,16 @@ func main() {
 
 	dbQueries := database.New(db)
 
+	rdb := redis.NewClient(&redis.Options{
+		Addr:     redisURL,
+		Password: "",
+		DB:       0,
+		Protocol: 2,
+	})
+
 	apiConfig := apiConfig{
-		DB: dbQueries,
+		DB:  dbQueries,
+		RDB: rdb,
 	}
 
 	router := chi.NewRouter()
@@ -91,6 +110,7 @@ func main() {
 	const collectionConcurrency = 10
 	const collectionInterval = time.Minute
 	go startScraping(dbQueries, collectionConcurrency, collectionInterval)
+	go startCrawling(dbQueries, rdb, collectionConcurrency, collectionInterval)
 
 	// START SERVER //
 	log.Printf("Server starting on port %v", portString)
@@ -104,7 +124,7 @@ func setEnv(envFile string) {
 		if err != nil {
 			log.Fatalf("Error loading .env file: %v", err)
 		}
-	} else if os.Getenv("DB_URL") == "" || os.Getenv("PORT") == "" {
-		log.Fatalf("DB_URL and PORT must be set as environment variables!\n\nLoaded DB_URL: %s, PORT: %s", os.Getenv("DB_URL"), os.Getenv("PORT"))
+	} else if os.Getenv("DB_URL") == "" || os.Getenv("PORT") == "" || os.Getenv("OLLAMA_URL") == "" || os.Getenv("OLLAMA_MODEL") == "" || os.Getenv("REDIS_URL") == "" {
+		log.Fatalf("DB_URL, PORT, OLLAMA_URL, OLLAMA_MODEL, and REDIS_URL must be set as environment variables!\n\nLoaded DB_URL: %s, PORT: %s, OLLAMA_URL: %s, OLLAMA_MODEL: %s, REDIS_URL: %s", os.Getenv("DB_URL"), os.Getenv("PORT"), os.Getenv("OLLAMA_URL"), os.Getenv("OLLAMA_MODEL"), os.Getenv("REDIS_URL"))
 	}
 }

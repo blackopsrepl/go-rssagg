@@ -10,10 +10,12 @@ import (
 	"github.com/blackopsrepl/go-rssagg/internal/database"
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
+	"github.com/redis/go-redis/v9"
 )
 
 type apiConfig struct {
-	DB *database.Queries
+	DB  *database.Queries
+	RDB *redis.Client
 }
 
 type userRequestHandler func(http.ResponseWriter, *http.Request, database.User)
