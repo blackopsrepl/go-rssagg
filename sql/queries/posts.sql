@@ -20,3 +20,29 @@ AND posts.published_at >= $2
 ORDER BY posts.published_at DESC
 LIMIT $3;
 --
+
+-- name: GetNextPostsToCrawl :many
+SELECT * FROM posts
+ORDER BY last_crawled_at ASC NULLS FIRST
+LIMIT $1;
+--
+
+-- name: GetNextPostsToSummarize :many
+SELECT * FROM posts
+ORDER BY last_summarized_at ASC NULLS FIRST
+LIMIT $1;
+--
+
+-- name: MarkPostCrawled :one
+UPDATE posts
+SET last_crawled_at = NOW()
+WHERE id = $1
+RETURNING *;
+--
+
+-- name: MarkPostSummarized :one
+UPDATE posts
+SET last_summarized_at = NOW()
+WHERE id = $1
+RETURNING *;
+--
